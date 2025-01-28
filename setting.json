@@ -1,0 +1,24 @@
+{
+  "serverIp": "127.0.0.1",
+  "serverPort": 8000,
+  "redisConfig": {
+    "redisType": "standalone",
+    "password": "",
+    "sentinel": {
+      "masterName": "master",
+      "addresses": ["127.0.0.1:6379"]
+    },
+    "standalone": {
+      "database": 0,
+      "address": "127.0.0.1:6379"
+    },
+    "cluster": {
+      "addresses": ["127.0.0.1:6379"]
+    }
+  },
+  "nacosUserName": "",
+  "nacosPassword": "",
+  "nacosServerAddress": "http://49.235.154.48:8848",
+  "nacosNameSpace": "public",
+  "nacosGroup": "DEFAULT_GROUP"
+}
