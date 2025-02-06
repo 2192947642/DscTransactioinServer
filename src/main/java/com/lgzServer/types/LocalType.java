@@ -9,9 +9,7 @@ import java.util.UUID;
 @Data
 public class LocalType {
 
-    public static String generateGlobalId(){
-        return "global"+"_"+UUID.randomUUID().toString();
-    }
+
     public static String generateLocalId(){
         return "local"+"_"+UUID.randomUUID().toString();
     }
@@ -20,20 +18,19 @@ public class LocalType {
     }
     public LocalType(String serverAddress){
         this.serverAddress=serverAddress;
-        globalId=generateGlobalId();
         localId=generateLocalId();
         beginTime= TimeUtil.getLocalTime();
         status= LocalStatus.wait;
     }
     public LocalType(String globalId,String serverAddress){
         if(globalId!=null) this.globalId=globalId;
-        else this.globalId=generateGlobalId();
         localId=generateLocalId();
         beginTime= TimeUtil.getLocalTime();
         status= LocalStatus.wait;
         this.serverAddress=serverAddress;
     }
     public Long trxId;//本地事务的事务id
+    public String applicationName;//当前事务的应用名
     public String serverAddress;//当前事务的服务地址
     public String globalId;//全局事务的uuid 存放在redis中
     public String localId;//本地事务的uuid

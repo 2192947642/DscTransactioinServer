@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/tjpu22t02
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: bsyz2021
+    type: com.alibaba.druid.pool.DruidDataSource
+  main:
+    web-application-type: servlet
+  application:
+    name: TractSqlServiceServlet
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #服务发现地址
+      config:
+  web:
+    resources:
+      static-locations: classpath:/static,classpath:/resources
+
+mybatis:
+  configuration:
+    auto-mapping-behavior: full
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  type-aliases-package: com.types.pojo
+  mapper-locations: classpath:/mapper/*.xml
