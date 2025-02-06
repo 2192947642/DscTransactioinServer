@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class GlobalNotice {
 
-    public LocalType localType;
-    public Boolean  isSuccess;//是否成功
+    private String localId;
+    private String globalId;
+    private Boolean  isSuccess;//是否成功
 }
