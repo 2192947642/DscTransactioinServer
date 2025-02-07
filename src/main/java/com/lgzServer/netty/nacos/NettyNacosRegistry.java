@@ -21,24 +21,23 @@ public class NettyNacosRegistry {
     private int nettyPort;
     @Value("${transact.netty.ip}")
     private String serverIp;
+    @Value("${spring.cloud.nacos.discovery.server-addr}")
+    private String serverAddr;
 
-
-    @Value("#{T(org.springframework.util.StringUtils).hasText('${spring.cloud.nacos.discovery.username}') ? '${spring.cloud.nacos.discovery.username}' : '${spring.cloud.nacos.username}'}")
+    @Value("${spring.cloud.nacos.discovery.username:${spring.cloud.nacos.username:}}")
     String userName;
 
-    @Value("#{T(org.springframework.util.StringUtils).hasText('${spring.cloud.nacos.discovery.password}') ? '${spring.cloud.nacos.discovery.password}' : '${spring.cloud.nacos.password}'}")
+    @Value("${spring.cloud.nacos.discovery.password:${spring.cloud.nacos.password:}}")
     String password;
-    @Value("${spring.cloud.nacos.discovery.namespace}")
+    @Value("${spring.cloud.nacos.discovery.namespace:public}")
     String nameSpace;
-    @Value("${spring.cloud.nacos.discovery.group}")
+    @Value("${spring.cloud.nacos.discovery.group:DEFAULT_GROUP}")
     String group;
 
     NamingService namingService;
     String serviceName="TractSqlServiceNetty";
-    String serverAddress;
     @PostConstruct
     public void init() throws NacosException, UnknownHostException {
-        this.serverAddress= AddressUtil.buildAddress(serverIp, String.valueOf(this.nettyPort));
         this.register();
     }
 
@@ -46,7 +45,7 @@ public class NettyNacosRegistry {
     public void register() throws  NacosException {
         Properties properties=new Properties();
         //设置nacos服务的地址
-        properties.setProperty("serverAddr",serverAddress);
+        properties.setProperty("serverAddr",serverAddr);
         //如果有账号密码那么久进行设置
         if(StringUtils.hasLength(userName)&& StringUtils.hasLength(password)){
             properties.setProperty("username",userName);

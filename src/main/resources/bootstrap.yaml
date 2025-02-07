@@ -1,6 +1,10 @@
 spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://49.235.154.48:8848
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/tjpu22t02
+    url: jdbc:mysql://localhost:3306/db1
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: bsyz2021
@@ -13,15 +17,10 @@ spring:
     multipart:
       max-file-size: 200MB
       max-request-size: 200MB
-  cloud:
-    nacos:
-      discovery:
-        server-addr: localhost:8848 #服务发现地址
-        username: 123456
-        password:
   web:
     resources:
       static-locations: classpath:/static,classpath:/resources
+
 mybatis:
   configuration:
     auto-mapping-behavior: full
@@ -29,3 +28,7 @@ mybatis:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
   type-aliases-package: com.types.pojo
   mapper-locations: classpath:/mapper/*.xml
+transact:
+  netty:
+    ip: auto #注册到服务器的netty服务端ip
+    port: 8848 # netty服务端端口
