@@ -9,16 +9,11 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 public class AddressUtil {
-    public static String buildAddress(String ip, String port){
-        return ip+":"+port;
-    }
-    public static String buildAddress(String ip){
+    public static String buildAddress(String ip, String port) throws UnknownHostException {
+        if(ip.equals("auto")) ip=getIp();
         return ip+":"+port;
     }
     private static Integer port=null;//当前服务的端口 //在start时进行设置
-    public static void initPort(Integer p){
-        if(port==null) port=p;
-    }
     public static String getIp() throws UnknownHostException {
         return InetAddress.getLocalHost().getHostAddress();
     }

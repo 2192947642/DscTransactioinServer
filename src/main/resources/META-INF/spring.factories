@@ -1,2 +1,1 @@
-org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-  com.lgzServer.spring.CustomBootstrapConfiguration
+org.springframework.context.ApplicationContextInitializer=com.lgzServer.spring.ExternalConfigInitializer

@@ -17,11 +17,11 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848 #服务发现地址
-      config:
+        username: 123456
+        password:
   web:
     resources:
       static-locations: classpath:/static,classpath:/resources
-
 mybatis:
   configuration:
     auto-mapping-behavior: full
