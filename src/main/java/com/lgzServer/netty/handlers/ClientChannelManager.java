@@ -34,13 +34,14 @@ public class ClientChannelManager extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx){
-
+        System.out.println(ctx.channel().remoteAddress()+"连接成功");
     }
 
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx)  {
         String address=addressMap.get(ctx.channel());
+        System.out.println("通道断开连接"+address);
         if(address!=null){
             channelMap.remove(address);
             addressMap.remove(ctx.channel());

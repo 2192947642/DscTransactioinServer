@@ -1,7 +1,7 @@
 package com.lgzServer.types.status;
 
 public enum MessageTypeEnum {
-    LocalType,
+    BranchNotice,
     GlobalNotice,
     ServerAddress
 }

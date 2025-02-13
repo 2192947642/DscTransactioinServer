@@ -3,12 +3,11 @@ import com.alibaba.nacos.common.utils.StringUtils;
 import com.lgzServer.types.redis.GlobalType;
 import com.lgzServer.types.sql.BranchTransaction;
 import com.lgzServer.types.status.GlobalStatus;
-import com.lgzServer.types.status.LocalStatus;
+import com.lgzServer.types.status.BranchStatus;
 import com.lgzServer.utils.JsonUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -52,10 +51,10 @@ public class RedisHelper {
             globalStatus=null;
             for(String key:typeMaps.keySet()){
                 BranchTransaction branchTransaction=typeMaps.get(key);
-                if(branchTransaction.getStatus()== LocalStatus.wait){
+                if(branchTransaction.getStatus()== BranchStatus.wait){
                    globalStatus=GlobalStatus.wait;
                 }
-                else if(branchTransaction.getStatus() == LocalStatus.fail){
+                else if(branchTransaction.getStatus() == BranchStatus.fail){
                     globalStatus=GlobalStatus.fail;
                 }
             }

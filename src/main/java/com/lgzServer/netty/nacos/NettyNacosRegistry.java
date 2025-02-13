@@ -19,7 +19,7 @@ import java.util.Properties;
 public class NettyNacosRegistry {
     @Value("${transact.netty.port}")
     private int nettyPort;
-    @Value("${transact.netty.ip}")
+    @Value("${transact.netty.ip:auto}")
     private String serverIp;
     @Value("${spring.cloud.nacos.discovery.server-addr}")
     private String serverAddr;
@@ -38,6 +38,7 @@ public class NettyNacosRegistry {
     String serviceName="TractSqlServiceNetty";
     @PostConstruct
     public void init() throws NacosException, UnknownHostException {
+         if(this.serverIp.equals("auto")) this.serverIp= AddressUtil.getIp();
         this.register();
     }
 

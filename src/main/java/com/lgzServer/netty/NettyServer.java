@@ -40,9 +40,11 @@ public class NettyServer {
             } catch (NacosException | InterruptedException e) {
                 log.error(e.getMessage());
             };
-        });
+        }).start();
+
     }
     public ChannelFuture start() throws InterruptedException {
+        System.out.println("NettyServer启动成功"+this.port);
         ChannelFuture channelFuture=bootstrap.bind(this.port).sync();
         return channelFuture;
     }
