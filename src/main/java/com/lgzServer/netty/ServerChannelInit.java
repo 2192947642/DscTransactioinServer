@@ -13,7 +13,6 @@ import io.netty.handler.codec.string.StringEncoder;
 public class ServerChannelInit extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
-
         ChannelPipeline pipeline= socketChannel.pipeline();
         pipeline.addLast(new LengthFieldPrepender(2,0,false));
         pipeline.addLast(new LengthFieldBasedFrameDecoder(65535,0,2,0,2));

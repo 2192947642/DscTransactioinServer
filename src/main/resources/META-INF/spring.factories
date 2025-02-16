@@ -1,1 +1,2 @@
-org.springframework.context.ApplicationContextInitializer=com.lgzServer.spring.ExternalConfigInitializer
+org.springframework.context.ApplicationContextInitializer=\
+com.lgzServer.spring.ExternalConfigInitializer

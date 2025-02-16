@@ -1,8 +1,11 @@
+
 spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: localhost:8850
+      config:
+        server-addr: ${spring.cloud.nacos.server-addr}
   datasource:
     url: jdbc:mysql://106.3.99.64:20021/tjpu22t02
     driver-class-name: com.mysql.cj.jdbc.Driver

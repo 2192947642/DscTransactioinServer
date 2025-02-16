@@ -23,14 +23,13 @@ public class ExternalConfigInitializer implements ApplicationContextInitializer<
         Properties properties = loadExternalProperties();
         if (!properties.isEmpty()) {
             PropertiesPropertySource propertySource = new PropertiesPropertySource("externalConfig", properties);
-            // 将外部配置添加到环境中，优先级较高
             environment.getPropertySources().addFirst(propertySource);
         }
     }
+
     private Properties loadExternalProperties() {
         Properties properties = new Properties();
         try {
-            // 获取JAR包所在的目录路径
             URL jarLocation = ExternalConfigInitializer.class.getProtectionDomain().getCodeSource().getLocation();
             File jarFile = new File(jarLocation.toURI());
             File configFile = new File(jarFile.getParentFile(), EXTERNAL_CONFIG_FILE);
@@ -39,15 +38,29 @@ public class ExternalConfigInitializer implements ApplicationContextInitializer<
                 try (FileInputStream fis = new FileInputStream(configFile)) {
                     Yaml yaml = new Yaml();
                     Map<String, Object> yamlMap = yaml.load(fis);
-                    properties.putAll(yamlMap);
-                    System.out.println("External configuration file has been loaded: " + configFile.getAbsolutePath());
+                    // 展开嵌套的Map结构为扁平属性
+                    flattenMap("", yamlMap, properties);
+                    System.out.println("External configuration loaded: " + configFile.getAbsolutePath());
                 }
             } else {
-                System.err.println("External configuration file not found: " + configFile.getAbsolutePath());
+                System.err.println("External config file not found: " + configFile.getAbsolutePath());
             }
         } catch (Exception e) {
-            System.err.println("Failed to load external configuration file: " + e.getMessage());
+            System.err.println("Failed to load external config: " + e.getMessage());
         }
         return properties;
+    }
+
+    private void flattenMap(String prefix, Map<String, Object> source, Properties target) {
+        source.forEach((key, value) -> {
+            String fullKey = prefix.isEmpty() ? key : prefix + "." + key;
+            if (value instanceof Map) {
+                // 递归处理子Map
+                flattenMap(fullKey, (Map<String, Object>) value, target);
+            } else if (value != null) {
+                // 将值转换为字符串并存入Properties
+                target.put(fullKey, value.toString());
+            }
+        });
     }
 }
