@@ -2,6 +2,7 @@ package com.lgzServer.spring.controller;
 
 import com.lgzServer.spring.mapper.BranchTransactionMapper;
 import com.lgzServer.spring.mapper.GlobalTransactionMapper;
+import com.lgzServer.types.BothTransaction;
 import com.lgzServer.types.Result;
 import com.lgzServer.types.sql.BranchTransaction;
 import com.lgzServer.types.sql.GlobalTransaction;
@@ -26,9 +27,24 @@ public class GlobalTransactController {
      public Result<GlobalTransaction> getItem(@RequestParam("globalId") String globalId){
         return Result.success(globalTransactionMapper.getGlobalTransaction(globalId));
      }
+     @PostMapping("globalTransaction/createAndJoin")
+     public Result<BothTransaction> createAndJoinGlobalTransaction(@RequestParam("timeout")Long timeout, @RequestBody BranchTransaction branchTransaction){
+         GlobalTransaction globalTransaction = new GlobalTransaction();
+         globalTransaction.setTimeout(timeout);
+         globalTransaction.setGlobalId(GlobalTransaction.generateGlobalId());//设置一个global
+         globalTransaction.setStatus(GlobalStatus.wait);
+         globalTransactionMapper.insertGlobalTransaction(globalTransaction);//
+         if(branchTransaction.getBranchId() ==null){
+             branchTransaction.setBranchId(BranchTransaction.generateBranchId());
+         }
+         branchTransaction.setGlobalId(globalTransaction.getGlobalId());//设置globalId;
+         branchTransactionMapper.insertBranchTransaction(branchTransaction);//加入到分支事务中
+         BothTransaction bothTransaction=new BothTransaction(branchTransaction,globalTransaction);
+         return Result.success(bothTransaction);
+     }
      //添加一个全局事务
      @PostMapping("/globalTransaction/create")
-     public Result<GlobalTransaction> beginTransaction(@RequestParam("timeout")Long timeout){
+     public Result<GlobalTransaction> createGlobalTransaction(@RequestParam("timeout")Long timeout){
          GlobalTransaction globalTransaction = new GlobalTransaction();
          globalTransaction.setTimeout(timeout);
          globalTransaction.setGlobalId(GlobalTransaction.generateGlobalId());//设置一个global

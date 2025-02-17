@@ -1,5 +1,6 @@
 package com.lgzServer.spring;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
-
+@Slf4j
 public class ExternalConfigInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     private static final String EXTERNAL_CONFIG_FILE = "serverConfig.yaml";
@@ -40,13 +41,12 @@ public class ExternalConfigInitializer implements ApplicationContextInitializer<
                     Map<String, Object> yamlMap = yaml.load(fis);
                     // 展开嵌套的Map结构为扁平属性
                     flattenMap("", yamlMap, properties);
-                    System.out.println("External configuration loaded: " + configFile.getAbsolutePath());
                 }
             } else {
-                System.err.println("External config file not found: " + configFile.getAbsolutePath());
+                log.error("外部配置文件不存在");
             }
         } catch (Exception e) {
-            System.err.println("Failed to load external config: " + e.getMessage());
+            log.error(e.getMessage());
         }
         return properties;
     }
