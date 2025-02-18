@@ -25,7 +25,7 @@ public class BranchTransactController {
      GlobalTransactionMapper globalTransactionMapper;
      @PutMapping("/branchTransaction/status/notice")
      public void noticeBranchTransaction(@RequestBody BranchTransaction branchTransaction){
-         if(branchTransaction.getStatus()== BranchStatus.fail||branchTransaction.getStatus()== BranchStatus.success){
+         if(branchTransaction.getStatus()== BranchStatus.success){
              branchTransactionMapper.updateStatusWhenWait(branchTransaction.getBranchId(),branchTransaction.getStatus().toString());
          }
          else{
@@ -43,7 +43,7 @@ public class BranchTransactController {
                          if(branchTransaction1.getStatus()== BranchStatus.wait){
                              isWait=true;
                          }
-                         if(branchTransaction1.getStatus()== BranchStatus.fail||branchTransaction1.getStatus()== BranchStatus.rollback){
+                         if(branchTransaction1.getStatus() == BranchStatus.rollback){
                              isFail=true;
                          }
                      }
@@ -61,7 +61,7 @@ public class BranchTransactController {
                          globalNotice.setIsSuccess(false);
                      }
              }
-             else if(branchTransaction.getStatus()== BranchStatus.fail){
+             else if(branchTransaction.getStatus()== BranchStatus.rollback){
                  globalNotice.setIsSuccess(false);
                  //更新全局事务状态为失败
                  globalTransactionMapper.updateGlobalTransaction(branchTransaction.getGlobalId(),GlobalStatus.fail.toString());
@@ -73,8 +73,12 @@ public class BranchTransactController {
          else if(globalTransaction.getStatus()==GlobalStatus.success){
              globalNotice.setIsSuccess(true);
          }
-         //对所有的分布式下属服务进行通知
+         //对所有的分布式下属服务中未进行提交或者回滚的服务进行通知
          for(BranchTransaction branchTransaction1:lists){
+             //如果是已经提交或者回滚的服务则跳过
+             if(branchTransaction1.getStatus()== BranchStatus.commit||branchTransaction1.getStatus()== BranchStatus.rollback){
+                 continue;
+             }
              globalNotice.setBranchId(branchTransaction1.getBranchId());
              Message message=new Message(MessageTypeEnum.GlobalNotice, JsonUtil.objToJson(globalNotice), TimeUtil.getLocalTime());
              ReceiveContext<Message> receiveContext= new ReceiveContext<>(branchTransaction1.getServerAddress(), message);
@@ -93,7 +97,7 @@ public class BranchTransactController {
     }
     @PutMapping("/branchTransaction/status")
     public void updateBranchStatus(@RequestBody BranchTransaction branchTransaction){
-        if(branchTransaction.getStatus()== BranchStatus.success||branchTransaction.getStatus()== BranchStatus.fail){
+        if(branchTransaction.getStatus()== BranchStatus.success){
             branchTransactionMapper.updateStatusWhenWait(branchTransaction.getBranchId(),branchTransaction.getStatus().toString());
         }
         else branchTransactionMapper.updateStatus(branchTransaction.getBranchId(),branchTransaction.getStatus().toString());
