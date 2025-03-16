@@ -65,7 +65,7 @@ public class GlobalTransactController {
                     boolean isSuccess=true;
                     ArrayList<BranchTransaction> lists=branchTransactionMapper.selectBranchTransactionByGlobalId(globalTransaction.getGlobalId());
                     for(BranchTransaction branchTransaction:lists){
-                        if(branchTransaction.getStatus().equals(BranchStatus.fail.toString())||branchTransaction.getStatus().equals(BranchStatus.rollback.toString())){
+                        if(branchTransaction.getStatus().equals(branchTransaction.getStatus().equals(BranchStatus.rollback.toString()))){
                             isSuccess=false;
                             break;
                         }
