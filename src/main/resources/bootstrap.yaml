@@ -2,25 +2,20 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8850
+        server-addr: localhost:8848
   datasource:
-    url: jdbc:mysql://106.3.99.64:20021/tjpu22t02
+    url: jdbc:mysql://127.0.0.1:3306/dcs_test
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: tjpu22t02
-    password: tjpu22t02
+    username: root
+    password: bsyz2021
     type: com.alibaba.druid.pool.DruidDataSource
   main:
     web-application-type: servlet
   application:
     name: TractSqlServiceServlet
-  servlet:
-    multipart:
-      max-file-size: 200MB
-      max-request-size: 200MB
   web:
     resources:
       static-locations: classpath:/static,classpath:/resources
-
 mybatis:
   configuration:
     auto-mapping-behavior: full

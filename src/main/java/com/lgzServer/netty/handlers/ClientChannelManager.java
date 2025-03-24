@@ -26,7 +26,7 @@ public class ClientChannelManager extends ChannelInboundHandlerAdapter {
     public void sendMessage(ReceiveContext<Message> receiveContext){
         Channel channel=getChannel(receiveContext.remoteAddress);
         if(channel==null||!channel.isActive()){//当前的通道并不是激活状态
-            System.out.println("通道连接错误"+receiveContext.remoteAddress);
+            log.error("通道连接错误{}", receiveContext.remoteAddress);
             return;
         }
         channel.writeAndFlush(JsonUtil.objToJson(receiveContext.message));
@@ -34,14 +34,14 @@ public class ClientChannelManager extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx){
-        System.out.println(ctx.channel().remoteAddress()+"连接成功");
+        log.info("通道连接成功{}", ctx.channel().remoteAddress());
     }
 
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx)  {
         String address=addressMap.get(ctx.channel());
-        System.out.println("通道断开连接"+address);
+        log.info("通道断开连接{}", address);
         if(address!=null){
             channelMap.remove(address);
             addressMap.remove(ctx.channel());

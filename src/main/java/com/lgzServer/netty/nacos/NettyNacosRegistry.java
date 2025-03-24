@@ -38,7 +38,7 @@ public class NettyNacosRegistry {
     String serviceName="TractSqlServiceNetty";
     @PostConstruct
     public void init() throws NacosException, UnknownHostException {
-         if(this.serverIp.equals("auto")) this.serverIp= AddressUtil.getIp();
+        if(this.serverIp.equals("auto")) this.serverIp= AddressUtil.getIp();
         this.register();
     }
 
