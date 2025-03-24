@@ -1,5 +1,4 @@
 package com.lgzServer.spring.controller;
-
 import com.lgzServer.spring.mapper.BranchTransactionMapper;
 import com.lgzServer.spring.mapper.GlobalTransactionMapper;
 import com.lgzServer.types.BothTransaction;
@@ -9,11 +8,8 @@ import com.lgzServer.types.sql.GlobalTransaction;
 import com.lgzServer.types.status.BranchStatus;
 import com.lgzServer.types.status.GlobalStatus;
 import com.lgzServer.utils.TimeUtil;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.Date;
 

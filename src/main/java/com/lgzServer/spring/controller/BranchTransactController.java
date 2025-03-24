@@ -12,7 +12,6 @@ import com.lgzServer.types.status.MessageTypeEnum;
 import com.lgzServer.utils.JsonUtil;
 import com.lgzServer.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
