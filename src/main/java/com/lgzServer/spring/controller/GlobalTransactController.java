@@ -10,6 +10,9 @@ import com.lgzServer.types.status.GlobalStatus;
 import com.lgzServer.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -54,8 +57,7 @@ public class GlobalTransactController {
         Long nowTime= TimeUtil.getNowTime();
         for(GlobalTransaction globalTransaction:globalTransactions){
            if(globalTransaction.getStatus()==GlobalStatus.wait){
-                Date beginTime= TimeUtil.strToDate(globalTransaction.getBeginTime());
-                if(nowTime-beginTime.getTime()>globalTransaction.getTimeout()){//如果已经超时
+                if(nowTime-TimeUtil.getMillTimeByStr(globalTransaction.getBeginTime())>globalTransaction.getTimeout()){//如果已经超时
                     globalTransaction.setStatus(GlobalStatus.fail);
                 }else{
                     boolean isSuccess=true;
