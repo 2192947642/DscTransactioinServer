@@ -36,7 +36,7 @@ public class BranchTransactController {
             //rollback可以是wait状态或者success状态 也就是除commit之外
             branchTransactionMapper.updateStatusNotPre(branchTransaction.getBranchId(), branchTransaction.getStatus().name(),BranchStatus.commit.name());
         }else if(branchTransaction.getStatus()==BranchStatus.commit){//提交状态 只能来自于success
-            branchTransactionMapper.updateStatusNotPre(branchTransaction.getBranchId(), branchTransaction.getStatus().name(), BranchStatus.success.name());
+            branchTransactionMapper.updateStatusWhenPre(branchTransaction.getBranchId(), branchTransaction.getStatus().name(), BranchStatus.success.name());
         }
     }
 

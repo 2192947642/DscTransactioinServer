@@ -9,6 +9,7 @@ import com.lgzServer.types.status.BranchStatus;
 import com.lgzServer.types.status.GlobalStatus;
 import com.lgzServer.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -20,6 +21,8 @@ import java.util.Date;
 public class GlobalTransactController {
      @Autowired
      GlobalTransactionMapper globalTransactionMapper;
+     @Autowired
+     TransactionTemplate transactionTemplate;
      @Autowired
      BranchTransactionMapper branchTransactionMapper;
      @GetMapping("/globalTransaction")
@@ -52,12 +55,14 @@ public class GlobalTransactController {
          return Result.success(globalTransaction);
      }
      @GetMapping("/globalTransactions")
+
      public Result<ArrayList<GlobalTransaction>> getItems(@RequestParam("globalIds")ArrayList<String> globalIds){
         ArrayList<GlobalTransaction> globalTransactions=globalTransactionMapper.getGlobalTransactions(globalIds);
         Long nowTime= TimeUtil.getNowTime();
         for(GlobalTransaction globalTransaction:globalTransactions){
            if(globalTransaction.getStatus()==GlobalStatus.wait){
                 if(nowTime-TimeUtil.getMillTimeByStr(globalTransaction.getBeginTime())>globalTransaction.getTimeout()){//如果已经超时
+                    //如果已经超时了 那么就修改状态为失败
                     globalTransaction.setStatus(GlobalStatus.fail);
                 }else{
                     boolean isSuccess=true;
@@ -74,12 +79,14 @@ public class GlobalTransactController {
                         globalTransaction.setStatus(GlobalStatus.fail);
                     }
                 }
-               globalTransactionMapper.updateGlobalTransactionStatusWhenWait(globalTransaction.getGlobalId(),GlobalStatus.success.toString());
-               globalTransaction.setStatus(globalTransactionMapper.getGlobalTransaction(globalTransaction.getGlobalId()).getStatus());
+                //修改状态
+               int number=globalTransactionMapper.updateGlobalTransactionStatusWhenWait(globalTransaction.getGlobalId(),GlobalStatus.success.toString());
+                if(number==0){//重新从数据库中获得最新的状态
+                    globalTransaction.setStatus(globalTransactionMapper.getGlobalTransaction(globalTransaction.getGlobalId()).getStatus());
+                }
            }
        }
         return Result.success(globalTransactionMapper.getGlobalTransactions(globalIds));
-
      }
      @DeleteMapping("/globalTransaction")
      public void deleteItem(@RequestParam("globalId") String globalId){
