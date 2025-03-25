@@ -27,5 +27,6 @@ transact:
   netty:
     ip: 127.0.0.1 #注册到服务器的netty服务端ip
     port: 8036 # netty服务端端口
+
 server:
   port: 8080

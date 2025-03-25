@@ -7,8 +7,10 @@ import java.util.ArrayList;
 
 @Mapper
 public interface BranchTransactionMapper {
-    @Update("update branch_transaction set status=#{status} where branch_id=#{branchId} and status='wait'")
-    void updateStatusWhenWait(@Param("branchId") String branchId,@Param("status") String status);
+    @Update("update branch_transaction set status=#{status} where branch_id=#{branchId} and status=#{preStatus}")
+    void updateStatusWhenPre(@Param("branchId") String branchId,@Param("status") String status,@Param("preStatus")String preStatus);
+    @Update("update branch_transaction set status=#{status} where branch_id=#{branchId} and status!=#{preStatus}")
+    void updateStatusNotPre(@Param("branchId") String branchId,@Param("status") String status,@Param("preStatus")String preStatus);
     @Select("select * from branch_transaction where global_id=#{globalId}")
     ArrayList<BranchTransaction> selectBranchTransactionByGlobalId(String globalId);
     @Select("select * from branch_transaction where global_id in #{globalIds}")

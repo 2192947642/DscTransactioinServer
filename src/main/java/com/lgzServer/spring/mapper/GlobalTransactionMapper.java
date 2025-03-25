@@ -13,9 +13,11 @@ public interface GlobalTransactionMapper {
     int updateGlobalTransaction(@Param("globalId") String globalId, @Param("status") String status);
     @Delete("delete from global_transaction where global_id=#{globalId}")
     int deleteGlobalTransaction(String globalId);
-    @Select("select * from global_transaction where global_id=#{globalId}")
+    @Select("select * from global_transaction where global_id=#{globalId} lock in share mode")
     GlobalTransaction getGlobalTransaction(String globalId);
-    @Select("select * from global_transaction where global_id in ${globalIds}")
+    @Select("select * from global_transaction where global_id=#{globalId} for update")
+    GlobalTransaction getGlobalTransactionForUpdate(String globalId);
+    @Select("select * from global_transaction where global_id in #{globalIds}")
     ArrayList<GlobalTransaction> getGlobalTransactions(ArrayList<String> globalIds);
     @Update("update global_transaction set status=#{status} where global_id=#{globalId} and status='wait'")
     int updateGlobalTransactionStatusWhenWait(@Param("globalId") String globalId,@Param("status") String status);

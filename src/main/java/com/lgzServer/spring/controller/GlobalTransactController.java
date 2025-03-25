@@ -19,9 +19,9 @@ import java.util.Date;
 @RestController
 public class GlobalTransactController {
      @Autowired
-    GlobalTransactionMapper globalTransactionMapper;
+     GlobalTransactionMapper globalTransactionMapper;
      @Autowired
-    BranchTransactionMapper branchTransactionMapper;
+     BranchTransactionMapper branchTransactionMapper;
      @GetMapping("/globalTransaction")
      public Result<GlobalTransaction> getItem(@RequestParam("globalId") String globalId){
         return Result.success(globalTransactionMapper.getGlobalTransaction(globalId));
@@ -32,7 +32,7 @@ public class GlobalTransactController {
          globalTransaction.setTimeout(timeout);
          globalTransaction.setGlobalId(GlobalTransaction.generateGlobalId());//设置一个global
          globalTransaction.setStatus(GlobalStatus.wait);
-            int n=globalTransactionMapper.insertGlobalTransaction(globalTransaction);//
+         globalTransactionMapper.insertGlobalTransaction(globalTransaction);//
          if(branchTransaction.getBranchId() ==null){
              branchTransaction.setBranchId(BranchTransaction.generateBranchId());
          }
