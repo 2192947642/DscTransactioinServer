@@ -11,7 +11,7 @@ public interface BranchTransactionMapper {
     void updateStatusWhenPre(@Param("branchId") String branchId,@Param("status") String status,@Param("preStatus")String preStatus);
     @Update("update branch_transaction set status=#{status} where branch_id=#{branchId} and status!=#{preStatus}")
     void updateStatusNotPre(@Param("branchId") String branchId,@Param("status") String status,@Param("preStatus")String preStatus);
-    @Select("select * from branch_transaction where global_id=#{globalId}")
+    @Select("select * from branch_transaction where global_id=#{globalId} in share mode")
     ArrayList<BranchTransaction> selectBranchTransactionByGlobalId(String globalId);
     @Select("select * from branch_transaction where global_id in #{globalIds}")
     ArrayList<BranchTransaction> selectBranchTransactionByGlobalIds(ArrayList<String> globalIds);

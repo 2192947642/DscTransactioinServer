@@ -43,8 +43,9 @@ public class BranchTransactController {
     @PutMapping("/branchTransaction/status/notice")
     public void noticeBranchTransaction(@RequestBody BranchTransaction branchTransaction) {
         updateBranchStatusCommon(branchTransaction);
-        ArrayList<BranchTransaction> lists = branchTransactionMapper.selectBranchTransactionByGlobalId(branchTransaction.getGlobalId());
         GlobalNotice globalNotice = new GlobalNotice();
+        ArrayList<BranchTransaction> lists = branchTransactionMapper.selectBranchTransactionByGlobalId(branchTransaction.getGlobalId());
+
         transactionTemplate.execute(status -> {
             GlobalTransaction globalTransaction = globalTransactionMapper.getGlobalTransactionForUpdate(branchTransaction.getGlobalId());
             globalNotice.setGlobalId(branchTransaction.getGlobalId());
@@ -62,21 +63,17 @@ public class BranchTransactController {
                     }
                     if (isFail) {
                         globalTransactionMapper.updateGlobalTransactionStatusWhenWait(branchTransaction.getGlobalId(), GlobalStatus.fail.toString());
-                    } else if (!isWait && !isWait) {
-                        globalTransactionMapper.updateGlobalTransactionStatusWhenWait(branchTransaction.getGlobalId(), GlobalStatus.success.toString());
-                    } else if (!isFail && isWait) {
-                        return null;//如果当前分布式事务中还有任务没有执行完成 那么就return
-                    }
-                    GlobalStatus globalStatus = globalTransactionMapper.getGlobalTransaction(branchTransaction.getGlobalId()).getStatus();
-                    if (globalStatus == GlobalStatus.success) {
-                        globalNotice.setIsSuccess(true);
-                    } else {
                         globalNotice.setIsSuccess(false);
+                    }else if(isWait){
+                        return null;
+                    }else{
+                        globalTransactionMapper.updateGlobalTransactionStatusWhenWait(branchTransaction.getGlobalId(), GlobalStatus.success.toString());
+                        globalNotice.setIsSuccess(true);
                     }
                 } else if (branchTransaction.getStatus() == BranchStatus.rollback) {
-                    globalNotice.setIsSuccess(false);
                     //更新全局事务状态为失败
                     globalTransactionMapper.updateGlobalTransaction(branchTransaction.getGlobalId(), GlobalStatus.fail.toString());
+                    globalNotice.setIsSuccess(false);
                 }
             } else if (globalTransaction.getStatus() == GlobalStatus.fail) {
                 globalNotice.setIsSuccess(false);
