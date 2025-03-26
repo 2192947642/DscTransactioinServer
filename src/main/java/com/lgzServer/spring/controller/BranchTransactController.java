@@ -44,9 +44,9 @@ public class BranchTransactController {
     public void noticeBranchTransaction(@RequestBody BranchTransaction branchTransaction) {
         updateBranchStatusCommon(branchTransaction);
         GlobalNotice globalNotice = new GlobalNotice();
-        ArrayList<BranchTransaction> lists = branchTransactionMapper.selectBranchTransactionByGlobalId(branchTransaction.getGlobalId());
-
-        transactionTemplate.execute(status -> {
+        ArrayList<BranchTransaction> lists =new ArrayList<>();
+        Boolean notice=transactionTemplate.execute(status -> {
+            lists.addAll(branchTransactionMapper.selectBranchTransactionByGlobalId(branchTransaction.getGlobalId())) ;
             GlobalTransaction globalTransaction = globalTransactionMapper.getGlobalTransactionForUpdate(branchTransaction.getGlobalId());
             globalNotice.setGlobalId(branchTransaction.getGlobalId());
             if (globalTransaction.getStatus() == GlobalStatus.wait) {
@@ -65,7 +65,7 @@ public class BranchTransactController {
                         globalTransactionMapper.updateGlobalTransactionStatusWhenWait(branchTransaction.getGlobalId(), GlobalStatus.fail.toString());
                         globalNotice.setIsSuccess(false);
                     }else if(isWait){
-                        return null;
+                        return false;//如果当前正在等待 那么就不提交
                     }else{
                         globalTransactionMapper.updateGlobalTransactionStatusWhenWait(branchTransaction.getGlobalId(), GlobalStatus.success.toString());
                         globalNotice.setIsSuccess(true);
@@ -75,13 +75,17 @@ public class BranchTransactController {
                     globalTransactionMapper.updateGlobalTransaction(branchTransaction.getGlobalId(), GlobalStatus.fail.toString());
                     globalNotice.setIsSuccess(false);
                 }
-            } else if (globalTransaction.getStatus() == GlobalStatus.fail) {
+            }
+            else if (globalTransaction.getStatus() == GlobalStatus.fail) {
                 globalNotice.setIsSuccess(false);
             } else if (globalTransaction.getStatus() == GlobalStatus.success) {
                 globalNotice.setIsSuccess(true);
             }
-            return null;
+            return true;
         });
+        if(notice!=null&&notice==false){
+            return;
+        }
         //对所有的分布式下属服务中未进行提交或者回滚的服务进行通知
         for (BranchTransaction branchTransaction1 : lists) {
             //如果是已经提交或者回滚的服务则跳过

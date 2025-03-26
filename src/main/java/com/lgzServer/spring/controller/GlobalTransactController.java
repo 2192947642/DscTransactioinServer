@@ -60,7 +60,7 @@ public class GlobalTransactController {
         ArrayList<GlobalTransaction> globalTransactions=globalTransactionMapper.getGlobalTransactions(globalIds);
         Long nowTime= TimeUtil.getNowTime();
         for(GlobalTransaction globalTransaction:globalTransactions){
-           if(globalTransaction.getStatus()==GlobalStatus.wait){
+           if(globalTransaction.getStatus()==GlobalStatus.wait){//如果当前的状态是wait,那么就进行判断
                 if(nowTime-TimeUtil.getMillTimeByStr(globalTransaction.getBeginTime())>globalTransaction.getTimeout()){//如果已经超时
                     //如果已经超时了 那么就修改状态为失败
                     globalTransaction.setStatus(GlobalStatus.fail);
